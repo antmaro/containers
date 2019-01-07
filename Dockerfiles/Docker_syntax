@@ -1,0 +1,35 @@
+# This is a comment line
+
+# The new container will be constructed using rhel7:7.5 tag container base image. 
+FROM rhel7:7.5
+
+# LABEL: is reponsible for adding generic metadata to an image. A LABEL is simple key/value pair.
+LABEL description="This is a custom httpd container image"
+
+# Setting up the Author field, you can see this metadata with docker inspect
+MAINTAINER Antonio Mari <amarirom@redhat.com>
+
+# RUN executes command in a new layer on top of the current image
+RUN yum install -y httpd
+
+# EXPOSE indicates that the container listens on the spscified port at runtime. THE EXPOSE instruction defines metadata only; the -p option in docker run command exposes a port from the host and the port
+# does not need to be listed in an EXPOSE instruction
+EXPOSE 80
+
+# Define environment variables that will be available to the container. You can use env command inside the container to view earch of the environment variables.
+ENV LogLevel "info"
+
+# copies files from local or remote source and adds them to the container's file system.
+ADD http://someserver.com/filename.pdf /var/www/html
+
+# Add local files only
+COPY ./src/ /var/www/html/
+
+# Specifies UID to use when runing the container for the RUN, CMD and ENTRYPOINT instructions in the Dockerfile
+USER apache
+
+# ENTRYPOINT specifies the default command to execute when the container is created. By defaul, the command that is executed is /bin/sh -c unless an ENTRYPOINT is specified.
+ENTRYPOINT ["/usr/sbin/httpd"]
+
+# CMD provides the default arguments for the ENTRYPOINT (2 formats: 1) JSON ARRAY 2) SHELL FORM)
+CMD ["-D", "FOREGROUND"]
